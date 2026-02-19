@@ -141,7 +141,9 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const HOST = '0.0.0.0';
+
+http.listen(PORT, HOST, () => {
+console.log('Servidor corriendo en el puerto ' + PORT);
 });
 
