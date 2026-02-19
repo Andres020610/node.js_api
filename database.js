@@ -2,15 +2,16 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const dbPath = path.resolve(__dirname, 'delyra.db');
+// Esto asegura que el archivo se cree en la carpeta raíz del proyecto
+const dbPath = path.join(__dirname, 'delyra.db');
 
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error opening database ' + dbPath + ': ' + err.message);
-    } else {
-        console.log('Connected to the SQLite database.');
-        initializeSchema();
-    }
+const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+if (err) {
+console.error('Error opening database: ' + err.message);
+} else {
+console.log('Connected to SQLite at: ' + dbPath);
+initializeSchema();
+}
 });
 
 function initializeSchema() {
