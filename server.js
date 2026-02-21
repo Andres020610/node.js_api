@@ -26,7 +26,16 @@ const reviewRoutes = require('./routes/reviews');
 const categoryRoutes = require('./routes/categories');
 const cartRoutes = require('./routes/cart');
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        '*',
+        'capacitor://localhost',
+        'http://localhost',
+        'http://localhost:4200',
+        'http://localhost:8100'
+    ],
+    credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

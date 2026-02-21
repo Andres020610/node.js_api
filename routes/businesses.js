@@ -67,7 +67,7 @@ router.post('/', verifyToken, upload.single('image'), (req, res) => {
     let { name, description, category, address, phone, image_url } = req.body;
 
     if (req.file) {
-        image_url = `http://localhost:3000/uploads/${req.file.filename}`;
+        image_url = `https://node-js-api-k4a8.onrender.com/uploads/${req.file.filename}`;
     }
 
     const sql = `INSERT INTO businesses (owner_id, name, description, category, address, phone, image_url, status) 
@@ -84,7 +84,7 @@ router.put('/:id', verifyToken, upload.single('image'), (req, res) => {
     let { name, description, category, address, phone, image_url } = req.body;
 
     if (req.file) {
-        image_url = `http://localhost:3000/uploads/${req.file.filename}`;
+        image_url = `https://node-js-api-k4a8.onrender.com/uploads/${req.file.filename}`;
     }
 
     // Check ownership

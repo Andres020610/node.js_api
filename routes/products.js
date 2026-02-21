@@ -71,7 +71,7 @@ router.post('/', verifyToken, upload.single('image'), (req, res) => {
     // If a file was uploaded, use the local path
     let finalImageUrl = image_url;
     if (req.file) {
-        finalImageUrl = `http://localhost:3000/uploads/${req.file.filename}`;
+        finalImageUrl = `https://node-js-api-k4a8.onrender.com/uploads/${req.file.filename}`;
     }
 
     // Get Merchant's Business ID first
@@ -99,7 +99,7 @@ router.put('/:id', verifyToken, upload.single('image'), (req, res) => {
     let { name, description, price, image_url, category, available, stock } = req.body;
 
     if (req.file) {
-        image_url = `http://localhost:3000/uploads/${req.file.filename}`;
+        image_url = `https://node-js-api-k4a8.onrender.com/uploads/${req.file.filename}`;
     }
 
     // Parse values to ensure they are correct for SQLite

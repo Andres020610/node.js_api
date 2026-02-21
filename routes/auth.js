@@ -37,7 +37,7 @@ router.post('/register', uploadDocs.array('documents', 5), (req, res) => {
             const docSql = `INSERT INTO delivery_documents (user_id, document_type, file_url) VALUES (?, ?, ?)`;
 
             req.files.forEach(file => {
-                const fileUrl = `http://localhost:3000/uploads/${file.filename}`;
+                const fileUrl = `https://node-js-api-k4a8.onrender.com/uploads/${file.filename}`;
                 const docType = file.originalname.split('.')[0] || 'Document';
                 db.run(docSql, [userId, docType, fileUrl]);
             });
