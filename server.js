@@ -28,11 +28,14 @@ const cartRoutes = require('./routes/cart');
 
 app.use(cors({
     origin: [
-        '*',
         'capacitor://localhost',
+        'file://',
         'http://localhost',
         'http://localhost:4200',
-        'http://localhost:8100'
+        'http://localhost:8100',
+        'https://node-js-api-k4a8.onrender.com', // Dominio backend (por si hay llamadas internas)
+        // Agrega aquí el dominio de tu frontend si lo publicas, por ejemplo:
+        // 'https://tudominio.com',
     ],
     credentials: true
 }));
