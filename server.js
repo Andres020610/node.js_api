@@ -6,10 +6,34 @@ const path = require('path');
 const db = require('./database');
 require('dotenv').config();
 
+
+const allowedOrigins = [
+    'capacitor://localhost',
+    'file://',
+    'http://localhost',
+    'http://localhost:4200',
+    'http://localhost:8100',
+    'https://localhost', // Para pruebas con HTTPS local
+    'https://node-js-api-k4a8.onrender.com', // Dominio backend
+    // Agrega aquí el dominio de tu frontend si lo publicas, por ejemplo:
+    // 'https://tudominio.com',
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+};
+
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
-    cors: { origin: "*" }
+        cors: { origin: allowedOrigins }
 });
 const PORT = process.env.PORT || 3000;
 
@@ -26,19 +50,7 @@ const reviewRoutes = require('./routes/reviews');
 const categoryRoutes = require('./routes/categories');
 const cartRoutes = require('./routes/cart');
 
-app.use(cors({
-    origin: [
-        'capacitor://localhost',
-        'file://',
-        'http://localhost',
-        'http://localhost:4200',
-        'http://localhost:8100',
-        'https://node-js-api-k4a8.onrender.com', // Dominio backend (por si hay llamadas internas)
-        // Agrega aquí el dominio de tu frontend si lo publicas, por ejemplo:
-        // 'https://tudominio.com',
-    ],
-    credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
