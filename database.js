@@ -16,6 +16,23 @@ initializeSchema();
 
 function initializeSchema() {
     db.serialize(() => {
+        // Migración automática: agregar push_token si no existe
+        db.get("PRAGMA table_info(users)", (err, columns) => {
+            if (err) {
+                console.error('Error consultando esquema users:', err.message);
+            } else {
+                const hasPushToken = Array.isArray(columns) ? columns.some(col => col.name === 'push_token') : false;
+                if (!hasPushToken) {
+                    db.run('ALTER TABLE users ADD COLUMN push_token TEXT', (err2) => {
+                        if (err2) {
+                            console.error('Error agregando columna push_token:', err2.message);
+                        } else {
+                            console.log('Columna push_token agregada a users');
+                        }
+                    });
+                }
+            }
+        });
         db.run(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
