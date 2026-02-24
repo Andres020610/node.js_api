@@ -79,7 +79,7 @@ router.post('/', verifyToken, upload.single('image'), (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         if (!business) return res.status(404).json({ error: 'No business found for this merchant' });
 
-        const sql = `INSERT INTO products (business_id, name, description, price, image_url, category, stock, available) 
+        const sql = `INSERT INTO products (business_id, name, description, price, image_url, category, stock, available)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
         db.run(sql, [business.id, name, description, parsedPrice, finalImageUrl, category, parsedStock, parsedAvailable], function (err) {
             if (err) return res.status(500).json({ error: err.message });
@@ -109,8 +109,8 @@ router.put('/:id', verifyToken, upload.single('image'), (req, res) => {
     const parsedAvailable = (available === '1' || available === 1 || available === 'true' || available === true || available === undefined) ? 1 : 0;
 
     // Verify ownership via Business ID
-    const sqlCheck = `SELECT p.id, p.image_url as current_image_url FROM products p 
-                      JOIN businesses b ON p.business_id = b.id 
+    const sqlCheck = `SELECT p.id, p.image_url as current_image_url FROM products p
+                      JOIN businesses b ON p.business_id = b.id
                       WHERE p.id = ? AND b.owner_id = ?`;
 
     db.get(sqlCheck, [productId, userId], (err, row) => {
@@ -125,7 +125,7 @@ router.put('/:id', verifyToken, upload.single('image'), (req, res) => {
 
         const finalImageUrl = image_url || row.current_image_url;
 
-        const sqlUpdate = `UPDATE products SET name=?, description=?, price=?, image_url=?, category=?, available=?, stock=? 
+        const sqlUpdate = `UPDATE products SET name=?, description=?, price=?, image_url=?, category=?, available=?, stock=?
                            WHERE id=?`;
         db.run(sqlUpdate, [name, description, parsedPrice, finalImageUrl, category, parsedAvailable, parsedStock, productId], function (err) {
             if (err) {
@@ -141,8 +141,8 @@ router.put('/:id', verifyToken, upload.single('image'), (req, res) => {
 // Delete Product (Merchant)
 router.delete('/:id', verifyToken, (req, res) => {
     // Verify ownership
-    const sqlCheck = `SELECT p.id FROM products p 
-                      JOIN businesses b ON p.business_id = b.id 
+    const sqlCheck = `SELECT p.id FROM products p
+                      JOIN businesses b ON p.business_id = b.id
                       WHERE p.id = ? AND b.owner_id = ?`;
 
     db.get(sqlCheck, [req.params.id, req.user.id], (err, row) => {
