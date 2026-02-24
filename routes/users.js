@@ -1,3 +1,8 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../database');
+const { verifyToken, isAdmin } = require('../middleware/auth');
+
 // Guardar el token push del usuario autenticado
 router.post('/push-token', verifyToken, (req, res) => {
     const userId = req.user.id;
@@ -9,10 +14,6 @@ router.post('/push-token', verifyToken, (req, res) => {
         res.json({ message: 'Push token guardado correctamente' });
     });
 });
-const express = require('express');
-const router = express.Router();
-const db = require('../database');
-const { verifyToken, isAdmin } = require('../middleware/auth');
 
 // Get all users
 router.get('/', verifyToken, isAdmin, (req, res) => {
