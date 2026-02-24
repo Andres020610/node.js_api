@@ -1,3 +1,14 @@
+// Guardar el token push del usuario autenticado
+router.post('/push-token', verifyToken, (req, res) => {
+    const userId = req.user.id;
+    const { push_token } = req.body;
+    if (!push_token) return res.status(400).json({ error: 'push_token es requerido' });
+    const sql = `UPDATE users SET push_token = ? WHERE id = ?`;
+    db.run(sql, [push_token, userId], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Push token guardado correctamente' });
+    });
+});
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
