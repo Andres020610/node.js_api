@@ -154,6 +154,20 @@ io.on('connection', (socket) => {
                         created_at: new Date().toISOString()
                     };
 
+                    // Notificación push al receptor del mensaje
+                    try {
+                        const { createNotification } = require('./routes/notifications');
+                        createNotification(
+                            receiver_id,
+                            'chat_messages',
+                            'Nuevo mensaje',
+                            message,
+                            order_id || null
+                        );
+                    } catch (e) {
+                        console.error('Error enviando notificación push de chat:', e);
+                    }
+
                     io.to(room).emit('receive-message', messageObj);
                 }
             );
