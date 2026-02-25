@@ -16,18 +16,18 @@ initializeSchema();
 
 function initializeSchema() {
     db.serialize(() => {
-        // Migración automática: agregar push_token si no existe
+        // Migración automática: agregar fcm_token si no existe
         db.get("PRAGMA table_info(users)", (err, columns) => {
             if (err) {
                 console.error('Error consultando esquema users:', err.message);
             } else {
-                const hasPushToken = Array.isArray(columns) ? columns.some(col => col.name === 'push_token') : false;
-                if (!hasPushToken) {
-                    db.run('ALTER TABLE users ADD COLUMN push_token TEXT', (err2) => {
+                const hasFcmToken = Array.isArray(columns) ? columns.some(col => col.name === 'fcm_token') : false;
+                if (!hasFcmToken) {
+                    db.run('ALTER TABLE users ADD COLUMN fcm_token TEXT', (err2) => {
                         if (err2) {
-                            console.error('Error agregando columna push_token:', err2.message);
+                            console.error('Error agregando columna fcm_token:', err2.message);
                         } else {
-                            console.log('Columna push_token agregada a users');
+                            console.log('Columna fcm_token agregada a users');
                         }
                     });
                 }
@@ -42,6 +42,7 @@ function initializeSchema() {
             phone TEXT,
             address TEXT,
             status TEXT DEFAULT 'active' CHECK(status IN ('active', 'pending', 'suspended', 'rejected')),
+            fcm_token TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`);
 

@@ -3,6 +3,34 @@ const router = express.Router();
 const db = require('../database');
 const { verifyToken, isAdmin } = require('../middleware/auth');
 
+const { sendPushNotification } = require('../utils/push');
+// Guardar token FCM
+router.post('/fcm-token', verifyToken, (req, res) => {
+    const userId = req.user.id;
+    const { fcmToken } = req.body;
+    if (!fcmToken) return res.status(400).json({ error: 'FCM token is required' });
+    const sql = `UPDATE users SET fcm_token = ? WHERE id = ?`;
+    db.run(sql, [fcmToken, userId], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'FCM token saved successfully' });
+    });
+});
+
+// Endpoint de prueba para enviar notificación push a un usuario
+router.post('/send-test-notification', verifyToken, async (req, res) => {
+    const userId = req.user.id;
+    db.get('SELECT fcm_token FROM users WHERE id = ?', [userId], async (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row || !row.fcm_token) return res.status(400).json({ error: 'No FCM token found for user' });
+        try {
+            const result = await sendPushNotification(row.fcm_token, '¡Notificación de prueba!', 'Esto es un mensaje de prueba desde el backend.');
+            res.json({ message: 'Notificación enviada', result });
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+});
+
 // Guardar el token push del usuario autenticado
 router.post('/push-token', verifyToken, (req, res) => {
     const userId = req.user.id;
